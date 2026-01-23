@@ -1,0 +1,92 @@
+<!--
+Disclaimer
+Copyright 2025 Google LLC. This solution, including any related sample code or data, is made available on an ‘as is’ ,‘as available’, and ‘with all faults’ basis, solely for illustrative purposes, and without warranty or representation of any kind. This solution is experimental, unsupported and provided solely for your convenience. Your use of it is subject to your agreements with Google, as applicable, and may constitute a beta feature as defined under those agreements. To the extent that you make any data available to Google in connection with your use of the solution, you represent and warrant that you have all necessary and appropriate rights, consents and permissions to permit Google to use and process that data. By using any portion of this solution, you acknowledge, assume and accept all risks, known and unknown, associated with its usage, including with respect to your deployment of any portion of this solution in your systems, or usage in connection with your business, if at all.
+-->
+<!-- Experiment Center Page -->
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+  <h1 class="text-2xl font-bold mb-6">Bulk Creation</h1>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+    <!-- Left Column: Setup -->
+    <div class="lg:col-span-1 space-y-6">
+      <div class="material-card">
+        <h2 class="text-lg font-bold mb-4">1. Selected Template</h2>
+        <div class="p-4 border border-outline rounded-lg flex items-center">
+          <img src="https://placehold.co/100x75/d1e3ff/1a73e8?text=Template"
+            class="w-16 h-12 object-cover rounded-md mr-4" alt="Template thumbnail">
+          <div>
+            <p class="font-semibold">Product on Wood Table</p>
+            <a href="#" id="change-template-link" class="text-sm text-primary font-medium">Change template</a>
+          </div>
+        </div>
+      </div>
+      <div class="material-card">
+        <h2 class="text-lg font-bold mb-4">2. Upload Data</h2>
+        <div class="p-6 border-2 border-dashed border-outline rounded-lg text-center cursor-pointer hover:bg-gray-50">
+          <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48"
+            aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6l2-2h6l2 2h6v14H9V12z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 01-3-3H9v4h3a3 3 0 013 3v12a3 3 0 01-3 3H9v-4h3a3 3 0 013-3V12z" />
+            <path d="M15 13l-3 5h4l-3 5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+          </svg>
+          <p class="mt-2 text-sm text-on-surface-variant">Click to upload or drag & drop CSV file</p>
+          <p class="text-xs text-gray-500 mt-1">Max 100 rows</p>
+        </div>
+      </div>
+      <button class="material-button material-button-primary w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z"
+            clip-rule="evenodd" />
+        </svg>
+        Generate 100 Images
+      </button>
+    </div>
+
+    <!-- Right Column: Results -->
+    <div class="lg:col-span-2 material-card">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-bold">3. Review Results</h2>
+        <div class="flex items-center space-x-2">
+          <button class="material-button material-button-secondary">Download Selected</button>
+          <button class="material-button material-button-primary">Download All (.zip)</button>
+        </div>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+        <div class="bg-primary h-2.5 rounded-full" style="width: 45%"></div>
+      </div>
+      <p class="text-center text-sm text-on-surface-variant mb-4">Generating images... 45 of 100 complete.</p>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <!-- Generated Image Item -->
+        <div class="relative group">
+          <img src="https://placehold.co/300x300/e0e0e0/ffffff?text=Generating..." alt="Generated Image"
+            class="w-full h-full object-cover rounded-lg aspect-square">
+          <div
+            class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-lg">
+            <input type="checkbox" class="form-checkbox h-5 w-5 text-primary rounded absolute top-2 left-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v4m0 0h-4m4 0l-5-5" />
+            </svg>
+          </div>
+        </div>
+        <div class="relative group">
+          <img src="https://placehold.co/300x300/a0c3ff/1a73e8?text=Image+1" alt="Generated Image"
+            class="w-full h-full object-cover rounded-lg aspect-square">
+          <div
+            class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-lg">
+            <input type="checkbox" class="form-checkbox h-5 w-5 text-primary rounded absolute top-2 left-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v4m0 0h-4m4 0l-5-5" />
+            </svg>
+          </div>
+        </div>
+        <!-- More images... -->
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,118 @@
+<!--
+Disclaimer
+Copyright 2025 Google LLC. This solution, including any related sample code or data, is made available on an ‘as is’ ,‘as available’, and ‘with all faults’ basis, solely for illustrative purposes, and without warranty or representation of any kind. This solution is experimental, unsupported and provided solely for your convenience. Your use of it is subject to your agreements with Google, as applicable, and may constitute a beta feature as defined under those agreements. To the extent that you make any data available to Google in connection with your use of the solution, you represent and warrant that you have all necessary and appropriate rights, consents and permissions to permit Google to use and process that data. By using any portion of this solution, you acknowledge, assume and accept all risks, known and unknown, associated with its usage, including with respect to your deployment of any portion of this solution in your systems, or usage in connection with your business, if at all.
+-->
+<!-- Creation Center Page -->
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Left Column: Settings -->
+    <div class="lg:col-span-1 space-y-6">
+      <div class="material-card">
+        <h2 class="text-lg font-bold mb-4">Template Settings</h2>
+        <div class="space-y-4">
+          <div>
+            <label for="templateName" class="block text-sm font-medium text-on-surface-variant mb-1">Template
+              Name</label>
+            <input type="text" id="templateName" class="material-input" placeholder="e.g., Product Lifestyle Shot">
+          </div>
+          <div>
+            <label for="aspectRatio" class="block text-sm font-medium text-on-surface-variant mb-2">Final Aspect
+              Ratio</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button
+                class="aspect-w-1 aspect-h-1 border-2 border-primary bg-blue-50 rounded-lg flex items-center justify-center font-semibold text-primary">1:1</button>
+              <button
+                class="aspect-w-16 aspect-h-9 border border-outline rounded-lg flex items-center justify-center text-on-surface-variant">16:9</button>
+              <button
+                class="aspect-w-9 aspect-h-16 border border-outline rounded-lg flex items-center justify-center text-on-surface-variant">9:16</button>
+              <button
+                class="aspect-w-191 aspect-h-100 border border-outline rounded-lg col-span-2 flex items-center justify-center text-on-surface-variant">1.91:1</button>
+              <button
+                class="aspect-w-4 aspect-h-5 border border-outline rounded-lg flex items-center justify-center text-on-surface-variant">4:5</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="material-button material-button-primary w-full">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v1h2a1 1 0 011 1v3a1 1 0 01-1 1h-2v9a2 2 0 01-2 2H7a2 2 0 01-2-2V12H3a1 1 0 01-1-1V8a1 1 0 011-1h2V5z" />
+        </svg>
+        Save Template
+      </button>
+    </div>
+
+    <!-- Right Section: Steps & Results -->
+    <div class="lg:col-span-2">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+
+        <!-- Steps Column -->
+        <div id="steps-container" class="space-y-6">
+          <div class="material-card" id="step-1">
+            <input type="text" id="step-1-title" class="step-title" value="Step 1: Base Image & Style">
+            <textarea id="step-1-prompt" class="material-input" rows="3"
+              placeholder="Enter prompt for this step... e.g., 'Change the background to a sunny beach setting, using the style from the provided image.'"></textarea>
+
+            <label for="step-1-file-input" class="mt-4 block cursor-pointer">
+              <div id="step-1-drop-zone"
+                class="p-6 border-2 border-dashed border-outline rounded-lg text-center hover:bg-gray-50 min-h-[150px] flex items-center justify-center">
+                <div id="step-1-image-preview-container">
+                  <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48"
+                    aria-hidden="true">
+                    <path
+                      d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                  <p class="mt-2 text-sm text-on-surface-variant">Click to upload or drag & drop image</p>
+                </div>
+              </div>
+            </label>
+            <input type="file" id="step-1-file-input" class="hidden" accept="image/*">
+
+            <div class="mt-4">
+              <button id="step-1-run-button" class="material-button material-button-primary w-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                    clip-rule="evenodd" />
+                </svg>
+                Run Step
+              </button>
+            </div>
+          </div>
+
+          <div id="step-2-placeholder" class="material-card opacity-50">
+            <h2 class="text-lg font-bold mb-4">Step 2: Subject Refinement</h2>
+            <p class="text-center text-on-surface-variant py-8">Run previous step to unlock</p>
+          </div>
+          <button id="add-step-button" class="material-button material-button-secondary w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Add Step
+          </button>
+        </div>
+
+        <!-- Results Column -->
+        <div id="results-container" class="space-y-6 sticky top-[80px]">
+          <div class="material-card" id="step-1-result-card">
+            <h2 class="text-lg font-bold mb-4">Result: <span id="result-title-1">Step 1: Base Image & Style</span></h2>
+            <div id="step-1-result-container"
+              class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center p-2">
+              <p class="text-on-surface-variant text-sm text-center">Output will appear here</p>
+            </div>
+          </div>
+          <div class="material-card opacity-50" id="step-2-result-placeholder">
+            <h2 class="text-lg font-bold mb-4">Step 2: Result</h2>
+            <div class="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
+              <p class="text-on-surface-variant text-sm">Run previous step to unlock</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

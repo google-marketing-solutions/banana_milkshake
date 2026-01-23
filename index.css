@@ -1,0 +1,133 @@
+/**
+ * Disclaimer
+ * Copyright 2025 Google LLC. This solution, including any related sample code or data, is made available on an ‘as is’ ,‘as available’, and ‘with all faults’ basis, solely for illustrative purposes, and without warranty or representation of any kind. This solution is experimental, unsupported and provided solely for your convenience. Your use of it is subject to your agreements with Google, as applicable, and may constitute a beta feature as defined under those agreements. To the extent that you make any data available to Google in connection with your use of the solution, you represent and warrant that you have all necessary and appropriate rights, consents and permissions to permit Google to use and process that data. By using any portion of this solution, you acknowledge, assume and accept all risks, known and unknown, associated with its usage, including with respect to your deployment of any portion of this solution in your systems, or usage in connection with your business, if at all.
+ */
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.nav-item {
+  cursor: pointer;
+  padding: 12px 24px;
+  border-radius: 999px;
+  transition: all 0.2s ease-in-out;
+  font-weight: 500;
+}
+
+.nav-item.active {
+  background-color: #e8f0fe;
+  color: #1967d2;
+}
+
+.nav-item:not(.active):hover {
+  background-color: #f1f3f4;
+}
+
+.material-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.material-button-primary {
+  background-color: #1a73e8;
+  color: white;
+}
+
+.material-button-primary:hover {
+  background-color: #185abc;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+}
+
+.material-button-secondary {
+  background-color: white;
+  color: #1a73e8;
+  border: 1px solid #dadce0;
+}
+
+.material-button-secondary:hover {
+  background-color: #f8f9fa;
+  border-color: #d2e3fc;
+}
+
+.material-card {
+  background-color: white;
+  border: 1px solid #dadce0;
+  border-radius: 12px;
+  padding: 24px;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.material-card:hover {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.08);
+}
+
+.material-input {
+  width: 100%;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 16px;
+}
+
+.material-input:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px #d2e3fc;
+}
+
+.step-title {
+  font-size: 1.125rem;
+  /* text-lg */
+  font-weight: 700;
+  /* font-bold */
+  margin-bottom: 1rem;
+  /* mb-4 */
+  border: 1px solid transparent;
+  background-color: transparent;
+  width: 100%;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+.step-title:hover {
+  border-color: #dadce0;
+  background-color: #f8f9fa;
+}
+
+.step-title:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px #d2e3fc;
+  /* focus ring */
+  background-color: white;
+}
+
+.mobile-nav-item {
+  display: block;
+  cursor: pointer;
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  font-weight: 500;
+}
+
+.mobile-nav-item.active {
+  background-color: #e8f0fe;
+  color: #1967d2;
+}
+
+.mobile-nav-item:not(.active):hover {
+  background-color: #f1f3f4;
+}
