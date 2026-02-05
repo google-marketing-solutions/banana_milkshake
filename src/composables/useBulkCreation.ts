@@ -1,5 +1,5 @@
 import {Modality, Part} from '@google/genai';
-import {JSZip} from 'jszip';
+import JSZip from 'jszip';
 import {computed, reactive, Ref, ref, watch} from 'vue';
 import {DEFAULT_IMAGE_MODEL, useVertexAi} from '../constants';
 import {ai, callGenAIApi} from '../services/ai';
