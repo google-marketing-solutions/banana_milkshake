@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+# Environment Variables (CRITICAL for API Keys)
+.env
+.env.local
+.env.*.local
+# Build Output (Vue/Vite)
+dist/
+dist-ssr/
+*.local
