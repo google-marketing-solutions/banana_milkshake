@@ -325,24 +325,25 @@ Art Style:
     ],
   },
   {
-    id: 'Text_only',
-    name: 'Text Only',
-    description: 'Generate ads image with text only',
-    previewImage: 'https://placehold.co/400x300/228B22/FFF?text=Text+Only',
+    id: 'Text_only_with_model',
+    name: 'Text Only With Model',
+    description: 'Generate ads image with text and 2-3 local human model only',
+    previewImage:
+      'https://placehold.co/400x300/228B22/FFF?text=Text+Only+With+Model',
     aspect_ratio: '16:9',
     genai_model: DEFAULT_IMAGE_MODEL,
     steps: [
       {
         name: 'Step 1: Generate',
-        text_prompt: `You are an ads Creative Specialist. Your task is to generate an ad image for {{Holiday}} for TikTok Shop {{Country}} market with no product but 2-3 local human model and some promotional elements. You will be given one reference style guideline image (Asset 1). From this guideline image, carefully extract the logo and put it onto your result image. The logo MUST be exactly the same as the style guideline image (Asset 1). For styling and layout of result image, follow rules below:
+        text_prompt: `You are an ads Creative Specialist. Your task is to generate an ad image for {{Country}} market with no product but 2-3 local human model and some promotional elements. You will be given one reference style guideline image (Asset 1). From this guideline image, carefully extract the logo and put it onto your result image. The logo MUST be exactly the same as the style guideline image (Asset 1). For styling and layout of result image, follow rules below:
 1. Any product on the style guideline image MUST NOT appear on the result image and also you MUST NOT generate any product as well.
-2. The overall styling like background color, text font should be similar to styling guideline (Asset 1) presenting the {{Holiday}} holiday season.
+2. The overall styling like background color, text font should be similar to styling guideline (Asset 1).
 3. There MUST be 2 - 3 human model from {{Country}} in the result image.
 4. The logo should be exactly the same as the style guideline image (Asset 1)
 
 You are also provided with some text element including headline: {{Headline}}, feature: {{Feature}}, cta: {{CTA}}. For text elements, follow the rule:
 1. Provided headline, feature and cta MUST be put on the result image in a correct way.
-2. You should also add additional text like text from style guideline (Asset 1) to the result image showing the {{Holiday}}.
+2. You should also add additional text like text from style guideline (Asset 1) to the result image relative to the content.
 3. Any number in the headline and feature should be highlighted (e.g. Bold, Different Color, etc) from other text.
 4. Make CTA button-like.
 `,
@@ -353,8 +354,48 @@ You are also provided with some text element including headline: {{Headline}}, f
             default_value: 'United States',
           },
           {
-            name: 'Holiday',
-            default_value: 'Christmas',
+            name: 'Headline',
+            default_value: '30% Off Any Order',
+          },
+          {
+            name: 'Feature',
+            default_value: 'Great Buy',
+          },
+          {
+            name: 'CTA',
+            default_value: 'SHOP NOW',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'Text_only',
+    name: 'Text Only',
+    description: 'Generate ads image with text only',
+    previewImage: 'https://placehold.co/400x300/227C55/FFF?text=Text+Only',
+    aspect_ratio: '16:9',
+    genai_model: DEFAULT_IMAGE_MODEL,
+    steps: [
+      {
+        name: 'Step 1: Generate',
+        text_prompt: `You are an ads Creative Specialist. Your task is to generate an ad image {{Country}} market with no product but only promotional text elements. You will be given one reference style guideline image (Asset 1). From this guideline image, carefully extract the logo and put it onto your result image. The logo MUST be exactly the same as the style guideline image (Asset 1). For styling and layout of result image, follow rules below:
+1. Any product on the style guideline image MUST NOT appear on the result image and also you MUST NOT generate any product as well.
+2. The overall styling like background color, text font should be similar to styling guideline (Asset 1).
+3. The logo should be exactly the same as the style guideline image (Asset 1).
+4. There should be only text and logo in the result image. DO NOT add any human model from style guideline image (Asset 1) to the result image.
+
+You are also provided with some text element including headline: {{Headline}}, feature: {{Feature}}, cta: {{CTA}}. For text elements, follow the rule:
+1. Provided headline, feature and cta MUST be put on the result image in a correct way.
+2. You should also add additional text like text from style guideline (Asset 1) to the result image relative to the content.
+3. Any number in the headline and feature should be highlighted (e.g. Bold, Different Color, etc) from other text.
+4. Make CTA button-like.
+`,
+        image_slots: [{asset_name: 'template_image', is_static: false}],
+        text_variables: [
+          {
+            name: 'Country',
+            default_value: 'United States',
           },
           {
             name: 'Headline',
