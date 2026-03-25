@@ -24,7 +24,46 @@ Banana Milkshake Pro is a gTech solution that provides an AI (Gemini)based image
 This nodejs proxy server lets you run your AI Studio Gemini application unmodified, without exposing your API key in the frontend code.
 
 
-## Instructions
+## Development
+
+### Environment Variables
+
+To set up your environment variables:
+1. Duplicate `/server/.env.example` and rename it to `/server/.env`.
+2. Open the new `.env` file and fill in the required values for your setup.
+
+### Run Everything Simultaneously (Recommended)
+From the root directory, simply install all project dependencies and run the included `start:all` script:
+
+```bash
+# Install root dependencies
+npm install
+
+# (First-time only) Install server dependencies
+cd server && npm install && cd ..
+
+# Start both the frontend and backend concurrently
+npm run start:all
+```
+
+### Run Components Separately
+If you prefer running the frontend and backend in separate terminal tabs:
+
+**Backend:**
+```bash
+cd server
+npm install
+npm run dev
+```
+
+**Frontend:**
+```bash
+# Open a new terminal at the project root
+npm install
+npm run dev
+```
+
+## Deployment
 
 **Prerequisites**:
 - [Google Cloud SDK / gcloud CLI](https://cloud.google.com/sdk/docs/install)

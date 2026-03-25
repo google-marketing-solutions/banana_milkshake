@@ -29,7 +29,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const viteConfig = defineConfig(({mode}) => {
-  const env = loadEnv(mode, '.', '');
+  const env = loadEnv(mode, './server', '');
   return {
     server: {
       port: 3000,
@@ -69,7 +69,7 @@ const viteConfig = defineConfig(({mode}) => {
     },
     plugins: [vue(), vueJsx()],
     define: {
-      'process.env.API_KEY': JSON.stringify(env.API_KEY),
+      'process.env.API_KEY': JSON.stringify(env.API_KEY || env.GEMINI_API_KEY),
       'process.env.DRIVE_API_KEY': JSON.stringify(env.DRIVE_API_KEY),
       'process.env.GOOGLE_CLIENT_ID': JSON.stringify(env.GOOGLE_CLIENT_ID),
       'process.env.GOOGLE_CLOUD_PROJECT': JSON.stringify(

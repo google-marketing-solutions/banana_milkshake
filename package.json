@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start:frontend": "npm run dev",
+    "start:backend": "npm --prefix server run dev",
+    "start:all": "concurrently \"npm run start:backend\" \"npm run start:frontend\""
   },
   "dependencies": {
     "@google/genai": "^1.21.0",
@@ -21,6 +24,7 @@
     "@types/node": "^22.14.0",
     "@vitejs/plugin-vue": "^6.0.3",
     "@vitejs/plugin-vue-jsx": "^5.1.3",
+    "concurrently": "^9.2.1",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }
