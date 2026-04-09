@@ -71,6 +71,48 @@ const proxyLimiter = rateLimit({
 // Apply the rate limiter to the /api-proxy route before the main proxy logic
 app.use('/api-proxy', proxyLimiter);
 
+// New general-purpose image proxy
+app.get('/image-proxy', async (req, res) => {
+  const imageUrl = req.query.url;
+  if (!imageUrl) {
+    return res.status(400).json({ error: 'Missing url parameter' });
+  }
+
+  try {
+    console.log(`Image Proxy: Fetching ${imageUrl}`);
+    const response = await axios({
+      method: 'get',
+      url: imageUrl,
+      responseType: 'stream',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'image/*,*/*',
+        'Referer': new URL(imageUrl).origin,
+      },
+      timeout: 10000,
+    });
+
+    // Pass through Content-Type and other relevant headers
+    if (response.headers['content-type']) {
+      res.setHeader('Content-Type', response.headers['content-type']);
+    }
+    if (response.headers['content-length']) {
+      res.setHeader('Content-Length', response.headers['content-length']);
+    }
+    if (response.headers['cache-control']) {
+      res.setHeader('Cache-Control', response.headers['cache-control']);
+    }
+
+    response.data.pipe(res);
+  } catch (error) {
+    console.error(`Image Proxy Error for ${imageUrl}:`, error.message);
+    res.status(error.response?.status || 500).json({
+      error: 'Failed to fetch image',
+      message: error.message
+    });
+  }
+});
+
 // Proxy route for Gemini API calls (HTTP)
 app.use('/api-proxy', async (req, res, next) => {
   // If the request is an upgrade request, it's for WebSockets, so pass to next middleware/handler

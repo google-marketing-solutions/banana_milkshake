@@ -17,17 +17,18 @@ FROM node:22 AS builder
 
 WORKDIR /app
 
-# Copy all files from the current directory
-COPY . ./
+COPY package.json package-lock.json .npmrc ./
 RUN echo "API_KEY=PLACEHOLDER" > ./.env
 RUN echo "GEMINI_API_KEY=PLACEHOLDER" >> ./.env
 
 # Install server dependencies
 WORKDIR /app/server
+COPY server/package.json server/package-lock.json ./
 RUN npm install
 
 # Install dependencies and build the frontend
 WORKDIR /app
+COPY . ./
 RUN mkdir dist
 RUN bash -c 'if [ -f package.json ]; then npm install && npm run build; fi'
 

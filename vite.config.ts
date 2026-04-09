@@ -44,6 +44,11 @@ const viteConfig = defineConfig(({mode}) => {
           changeOrigin: true,
           secure: false,
         },
+        '/image-proxy': {
+          target: 'http://localhost:3001',
+          changeOrigin: true,
+          secure: false,
+        },
         '/api-proxy': {
           target: 'http://localhost:3001',
           changeOrigin: true,

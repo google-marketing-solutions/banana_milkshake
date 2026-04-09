@@ -111,25 +111,58 @@ export function useBulkCreation(
   });
 
   const parseCSV = (text: string): Array<Record<string, string>> => {
-    const rows = text
-      .trim()
-      .split('\n')
-      .map((r) => r.trim());
-    if (rows.length < 2) {
-      return [];
+    const result: string[][] = [];
+    let row: string[] = [];
+    let field = "";
+    let inQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      const nextChar = text[i + 1];
+
+      if (inQuotes) {
+        if (char === '"' && nextChar === '"') {
+          field += '"';
+          i++;
+        } else if (char === '"') {
+          inQuotes = false;
+        } else {
+          field += char;
+        }
+      } else {
+        if (char === '"') {
+          inQuotes = true;
+        } else if (char === ',') {
+          row.push(field);
+          field = "";
+        } else if (char === '\n' || (char === '\r' && nextChar === '\n')) {
+          row.push(field);
+          result.push(row);
+          row = [];
+          field = "";
+          if (char === '\r') i++;
+        } else if (char !== '\r') {
+          field += char;
+        }
+      }
     }
-    const headers = rows[0].split(',').map((h) => h.trim());
-    return rows.slice(1).map((row) => {
-      const values = row.split(',');
-      return headers.reduce(
-        (obj, header, index) => {
-          obj[header] = values[index]?.trim() || '';
-          return obj;
-        },
-        {} as Record<string, string>,
-      );
+    if (row.length > 0 || field !== "") {
+      row.push(field);
+      result.push(row);
+    }
+
+    if (result.length < 2) return [];
+
+    const headers = result[0].map((h) => h.trim());
+    return result.slice(1).map((rowValues) => {
+      const obj: Record<string, string> = {};
+      headers.forEach((header, index) => {
+        obj[header] = rowValues[index]?.trim() || '';
+      });
+      return obj;
     });
   };
+
 
   const handleBulkFileUpload = (file: File) => {
     if (isBulkProcessing.value) {
@@ -244,37 +277,21 @@ export function useBulkCreation(
   };
 
   const urlToGeminiPart = async (url: string) => {
-    const CORS_PROXY_URL = 'https://corsproxy.io/?';
+    const CORS_PROXY_URL = '/image-proxy?url=';
 
     try {
-      const response = await fetch(CORS_PROXY_URL + encodeURIComponent(url), {
-        referrerPolicy: 'no-referrer',
-      });
+      const response = await fetch(CORS_PROXY_URL + encodeURIComponent(url));
       if (!response.ok) {
         throw new Error(
-          `Proxy fetch failed with status: ${response.statusText} (${response.status})`,
+          `Image proxy fetch failed with status: ${response.statusText} (${response.status})`,
         );
       }
       const blob = await response.blob();
       return await blobToGeminiPart(blob);
-    } catch (proxyError: unknown) {
-      console.warn(
-        `CORS proxy fetch for ${url} failed: ${proxyError instanceof Error ? proxyError.message : String(proxyError)}. Attempting direct fetch as a fallback.`,
-      );
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(
-            `Direct fetch failed with status: ${response.statusText} (${response.status})`,
-          );
-        }
-        const blob = await response.blob();
-        return await blobToGeminiPart(blob);
-      } catch (directError: unknown) {
-        console.error(`Direct fetch for ${url} also failed:`, directError);
-        const combinedMessage = `Could not load image from URL. Proxy failed: (${proxyError instanceof Error ? proxyError.message : String(proxyError)}). Direct fetch also failed: (${directError instanceof Error ? directError.message : String(directError)}). Please ensure the URL is correct and publicly accessible.`;
-        throw new Error(combinedMessage);
-      }
+    } catch (error: unknown) {
+      console.error(`Failed to fetch image via proxy for ${url}:`, error);
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Could not load image from URL via internal proxy: ${message}. Please ensure the URL is correct and publicly accessible.`);
     }
   };
 
