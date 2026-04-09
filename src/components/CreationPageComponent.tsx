@@ -476,7 +476,7 @@ export const CreationPageComponent = defineComponent({
           ? previewImageFileName
           : props.initialTemplate?.previewImageFileName,
       };
-      emit('save-template-to-drive', templateData, filesToSave);
+      emit('save-template-to-drive', templateData, filesToSave, props.initialTemplate?.driveFolderId);
     };
 
     return () => (

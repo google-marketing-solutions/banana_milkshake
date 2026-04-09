@@ -17,6 +17,9 @@
 import {computed, ref} from 'vue';
 import {APP_FOLDER_NAME, TEMPLATE_JSON_FILENAME} from '../constants';
 import {Template, TemplateStep} from '../types';
+
+const driveTemplatesCache = ref<Template[]>([]);
+const isCacheValid = ref(false);
 /**
  * A Vue composable for interacting with Google Drive.
  * It handles GAPI and GIS initialization, user sign-in/sign-out,
@@ -33,6 +36,7 @@ export function useGoogleDrive(onAuthChange: (isSignedIn: boolean) => void) {
   const SCOPES = 'https://www.googleapis.com/auth/drive';
 
   let tokenClient: google.accounts.oauth2.TokenClient;
+  let refreshTimer: number | null = null;
   const isGapiInitialized = ref(false);
   const isGisInitialized = ref(false);
 
@@ -105,9 +109,30 @@ export function useGoogleDrive(onAuthChange: (isSignedIn: boolean) => void) {
         }
         isSignedIn.value = true;
         onAuthChange(true);
+        scheduleTokenRefresh(resp.expires_in);
       },
     });
     isGisInitialized.value = true;
+  }
+
+  function scheduleTokenRefresh(expiresInSeconds: string | number | undefined) {
+    if (refreshTimer) {
+      window.clearTimeout(refreshTimer);
+      refreshTimer = null;
+    }
+    const seconds = expiresInSeconds ? Number(expiresInSeconds) : 3600;
+    // Refresh 5 minutes before expiration
+    const bufferSeconds = 300;
+    const delayMs = Math.max(0, (seconds - bufferSeconds) * 1000);
+    console.log(`Scheduling token refresh in ${delayMs / 1000} seconds.`);
+    refreshTimer = window.setTimeout(silentRefresh, delayMs);
+  }
+
+  function silentRefresh() {
+    console.log('Attempting silent token refresh...');
+    if (tokenClient) {
+      tokenClient.requestAccessToken(); // No prompt: 'consent'
+    }
   }
 
   function signIn() {
@@ -123,6 +148,10 @@ export function useGoogleDrive(onAuthChange: (isSignedIn: boolean) => void) {
   }
 
   function signOut() {
+    if (refreshTimer) {
+      window.clearTimeout(refreshTimer);
+      refreshTimer = null;
+    }
     const token = gapi.client.getToken();
     if (token !== null) {
       google.accounts.oauth2.revoke(token.access_token, () => {
@@ -266,6 +295,7 @@ export function useGoogleDrive(onAuthChange: (isSignedIn: boolean) => void) {
   async function saveTemplate(
     templateData: Template,
     filesToSave: Record<string, File>,
+    sourceFolderId?: string,
   ) {
     const appFolderId = await getAppFolderId();
     if (!appFolderId) {
@@ -278,6 +308,46 @@ export function useGoogleDrive(onAuthChange: (isSignedIn: boolean) => void) {
     );
     if (!templateFolderId) {
       throw new Error('Could not create a folder for the template.');
+    }
+
+    // Copy static assets from source folder if needed
+    if (sourceFolderId && sourceFolderId !== templateFolderId) {
+      for (const step of templateData.steps) {
+        for (const slot of step.image_slots) {
+          if (slot.is_static && slot.default_file_name) {
+            // If we are not uploading a new file for this slot
+            if (!filesToSave[slot.default_file_name]) {
+              console.log(
+                `Copying static asset ${slot.default_file_name} from ${sourceFolderId} to ${templateFolderId}`,
+              );
+              const sourceFileId = await findFileInFolder(
+                sourceFolderId,
+                slot.default_file_name,
+              );
+              if (sourceFileId) {
+                try {
+                  await gapi.client.drive.files.copy({
+                    fileId: sourceFileId,
+                    resource: {
+                      parents: [templateFolderId],
+                      name: slot.default_file_name,
+                    },
+                  });
+                } catch (copyError) {
+                  console.error(
+                    `Failed to copy file ${slot.default_file_name}:`,
+                    copyError,
+                  );
+                }
+              } else {
+                console.warn(
+                  `Source file ${slot.default_file_name} not found in ${sourceFolderId}`,
+                );
+              }
+            }
+          }
+        }
+      }
     }
 
     // Create a clean copy for saving, removing client-side temporary properties
@@ -362,7 +432,7 @@ export function useGoogleDrive(onAuthChange: (isSignedIn: boolean) => void) {
     return null;
   }
 
-  async function listTemplates(): Promise<Template[]> {
+  async function fetchTemplates(): Promise<Template[]> {
     const folderId = await getAppFolderId();
     if (!folderId) return [];
 
@@ -441,11 +511,35 @@ export function useGoogleDrive(onAuthChange: (isSignedIn: boolean) => void) {
         },
       );
       const templates = await Promise.all(templatePromises);
-      return templates.filter((t): t is Template => t !== null);
+      const filteredTemplates = templates.filter((t): t is Template => t !== null);
+
+      // Update cache
+      driveTemplatesCache.value = filteredTemplates;
+      isCacheValid.value = true;
+
+      return filteredTemplates;
     } catch (error) {
       console.error('Error listing templates from Drive:', error);
       return [];
     }
+  }
+
+  async function listTemplates(): Promise<Template[]> {
+    if (isCacheValid.value) {
+      console.log('Returning cached templates.');
+      silentRefreshTemplates();
+      return driveTemplatesCache.value;
+    }
+
+    console.log('Cache invalid or first load, performing full load.');
+    return fetchTemplates();
+  }
+
+  function silentRefreshTemplates() {
+    console.log('Attempting silent template refresh...');
+    fetchTemplates().catch((err) => {
+      console.error('Silent refresh failed:', err);
+    });
   }
 
   async function getTemplateAssets(
@@ -503,5 +597,6 @@ export function useGoogleDrive(onAuthChange: (isSignedIn: boolean) => void) {
     getTemplateAssets,
     deleteTemplate,
     initialize,
+    driveTemplates: driveTemplatesCache,
   };
 }

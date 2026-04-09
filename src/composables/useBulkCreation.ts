@@ -44,6 +44,7 @@ export function useBulkCreation(
   const isBulkProcessing = ref(false);
   const isBulkDownloading = ref(false);
   const bulkStaticAssets = reactive<Record<string, Part>>({});
+  const bulkConcurrency = ref(5);
   const bulkTemperature = ref(0.4);
   const bulkGenaiModel = ref(DEFAULT_IMAGE_MODEL);
   const bulkAspectRatio = ref('1:1');
@@ -438,12 +439,35 @@ export function useBulkCreation(
 
     isBulkProcessing.value = true;
     const jobsToRun = bulkJobs.filter((j) => j.status === 'pending');
-    for (const job of jobsToRun) {
+    const concurrency = bulkConcurrency.value;
+    const executing = new Set<Promise<void>>();
+    const delayMs = 200; // Small delay to avoid API spikes
+
+    for (let i = 0; i < jobsToRun.length; i++) {
+      const job = jobsToRun[i];
       if (!isBulkProcessing.value) {
         break;
       }
-      await generateImageForRow(job);
+
+      const p = (async () => {
+        await generateImageForRow(job);
+      })().finally(() => {
+        executing.delete(p);
+      });
+
+      executing.add(p);
+
+      if (executing.size >= concurrency) {
+        await Promise.race(executing);
+      }
+
+      // Small delay between starting tasks
+      if (i < jobsToRun.length - 1) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
     }
+
+    await Promise.all(executing);
     isBulkProcessing.value = false;
   };
 
@@ -507,6 +531,7 @@ export function useBulkCreation(
     bulkProgress,
     bulkCompletedCount,
     bulkSuccessCount,
+    bulkConcurrency,
     bulkTemperature,
     bulkGenaiModel,
     bulkAspectRatio,

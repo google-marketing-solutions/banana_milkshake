@@ -44,6 +44,7 @@ export const SUPPORTED_IMAGE_MODELS: string[] = (process.env
   .SUPPORTED_IMAGE_MODEL as unknown as string[]) || [
   'gemini-2.5-flash-image',
   'gemini-3-pro-image-preview',
+  'gemini-3.1-flash-image-preview',
 ];
 
 /**

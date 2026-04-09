@@ -1,7 +1,7 @@
 {
   "name": "banana-milkshake",
   "private": true,
-  "version": "2026.1.17",
+  "version": "2026.05.16",
   "type": "module",
   "scripts": {
     "dev": "vite",

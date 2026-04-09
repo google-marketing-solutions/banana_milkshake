@@ -36,6 +36,7 @@ export const BulkCreationPageComponent = defineComponent({
     progress: {type: Number, required: true},
     completedCount: {type: Number, required: true},
     successCount: {type: Number, required: true},
+    concurrency: {type: Number, required: true},
     temperature: {type: Number, required: true},
     model: {type: String, required: true},
     aspectRatio: {type: String, required: true},
@@ -48,6 +49,7 @@ export const BulkCreationPageComponent = defineComponent({
     'download-zip',
     'open-preview',
     'rerun-selected',
+    'update:concurrency',
     'update:temperature',
     'update:model',
     'update:aspectRatio',
@@ -308,6 +310,27 @@ export const BulkCreationPageComponent = defineComponent({
                     {resolutionOptions.value.map((res) => (
                       <option key={res} value={res}>
                         {res}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-on-surface-variant mb-1">
+                    Concurrency Limit
+                  </label>
+                  <select
+                    value={props.concurrency}
+                    onInput={(e: Event) =>
+                      emit(
+                        'update:concurrency',
+                        Number((e.target as HTMLSelectElement).value),
+                      )
+                    }
+                    class="material-input bg-white">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+                      <option key={n} value={n}>
+                        {n}
                       </option>
                     ))}
                   </select>

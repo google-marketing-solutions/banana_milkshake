@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import {computed, defineComponent, PropType, reactive, ref, watch} from 'vue';
+import {PropType, computed, defineComponent, ref, watch} from 'vue';
 import {APP_FOLDER_NAME} from '../constants';
 import {TEMPLATES} from '../data/templates';
 import {Template} from '../types';
@@ -28,6 +28,10 @@ export const LibraryPageComponent = defineComponent({
   props: {
     isSignedIn: {
       type: Boolean,
+      required: true,
+    },
+    driveTemplates: {
+      type: Array as PropType<Template[]>,
       required: true,
     },
     listTemplates: {
@@ -44,14 +48,13 @@ export const LibraryPageComponent = defineComponent({
     const activeTab = ref('built-in');
     const searchQuery = ref('');
     const builtInTemplates = ref(TEMPLATES);
-    const driveTemplates = reactive<Template[]>([]);
     const isLoadingDrive = ref(false);
 
     const displayedTemplates = computed(() => {
       const source =
         activeTab.value === 'built-in'
           ? builtInTemplates.value
-          : driveTemplates;
+          : props.driveTemplates;
       if (!searchQuery.value.trim()) {
         return source;
       }
@@ -67,16 +70,13 @@ export const LibraryPageComponent = defineComponent({
 
     const loadDriveTemplates = async () => {
       if (!props.isSignedIn) {
-        driveTemplates.splice(0);
         return;
       }
       isLoadingDrive.value = true;
       try {
-        const templates = await props.listTemplates();
-        driveTemplates.splice(0, driveTemplates.length, ...templates);
+        await props.listTemplates();
       } catch (error) {
         console.error('Error loading Drive templates:', error);
-        driveTemplates.splice(0);
         alert('Failed to load templates from Google Drive.');
       } finally {
         isLoadingDrive.value = false;

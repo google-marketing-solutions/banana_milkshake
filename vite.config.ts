@@ -86,6 +86,7 @@ const viteConfig = defineConfig(({mode}) => {
       'process.env.SUPPORTED_IMAGE_MODEL': [
         'gemini-2.5-flash-image',
         'gemini-3-pro-image-preview',
+        'gemini-3.1-flash-image-preview',
       ],
       'process.env.APP_VERSION': JSON.stringify(version),
     },

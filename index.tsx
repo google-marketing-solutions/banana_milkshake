@@ -64,6 +64,7 @@ const App = {
       getTemplateAssets,
       deleteTemplate,
       initialize: initializeDrive,
+      driveTemplates,
     } = useGoogleDrive((authed: boolean) => {
       if (authed && currentPage.value === 'library') {
         // Potentially refresh drive templates list here
@@ -86,6 +87,7 @@ const App = {
       bulkJobs,
       isBulkProcessing,
       isBulkDownloading,
+      bulkConcurrency,
       bulkProgress,
       bulkCompletedCount,
       bulkSuccessCount,
@@ -139,6 +141,7 @@ const App = {
     const handleSaveToDrive = async (
       templateData: Template,
       filesToSave: Record<string, File>,
+      sourceFolderId?: string,
     ) => {
       if (!isSignedIn.value) {
         alert('Please sign in with Google to save templates.');
@@ -147,7 +150,7 @@ const App = {
       }
       isSaving.value = true;
       try {
-        await saveTemplate(templateData, filesToSave);
+        await saveTemplate(templateData, filesToSave, sourceFolderId);
       } catch (err: unknown) {
         console.error('Failed to save template:', err);
         let message = 'An unknown error occurred.';
@@ -189,6 +192,7 @@ const App = {
       currentTemplateForBulk,
       pageComponent,
       listTemplates,
+      driveTemplates,
       getTemplateAssets,
       previewImageUrl,
       openPreview,
@@ -197,6 +201,7 @@ const App = {
       // Bulk creation state and handlers
       bulkJobs,
       isBulkProcessing,
+      bulkConcurrency,
       isBulkDownloading,
       bulkProgress,
       bulkCompletedCount,
@@ -275,6 +280,7 @@ const App = {
             :selected-template="currentTemplateForBulk"
             :is-saving="isSaving"
             :list-templates="listTemplates"
+            :drive-templates="driveTemplates"
             :get-template-assets="getTemplateAssets"
             :delete-template="deleteTemplate"
             :jobs="bulkJobs"
@@ -291,6 +297,8 @@ const App = {
             @update:aspect-ratio="val => bulkAspectRatio = val"
             :resolution="bulkResolution"
             @update:resolution="val => bulkResolution = val"
+            :concurrency="bulkConcurrency"
+            @update:concurrency="val => bulkConcurrency = val"
 
             @use-template="useTemplate"
             @create-new="createNewTemplate"
