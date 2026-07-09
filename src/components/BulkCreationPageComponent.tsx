@@ -550,7 +550,7 @@ export const BulkCreationPageComponent = defineComponent({
                           <div class="aspect-square bg-gray-100 rounded-md w-full max-w-[100px] flex items-center justify-center">
                             {job.inputImageUrl ? (
                               <img
-                                src={job.inputImageUrl}
+                                src={`/image-proxy?url=${encodeURIComponent(job.inputImageUrl)}`}
                                 onError={(e: Event) =>
                                   ((
                                     e.target as HTMLImageElement
