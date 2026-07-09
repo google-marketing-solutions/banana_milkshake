@@ -31,12 +31,32 @@ const port = process.env.PORT || 3001;
 const externalApiBaseUrl = 'https://generativelanguage.googleapis.com';
 const externalWsBaseUrl = 'wss://generativelanguage.googleapis.com';
 // Support either API key env-var variant
+let ai;
 const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
-const ai = new GoogleGenAI({
-  vertexai: true,
-  project: process.env.GOOGLE_CLOUD_PROJECT,
-  location: process.env.GOOGLE_CLOUD_LOCATION || 'global'
-});
+const project = process.env.GOOGLE_CLOUD_PROJECT;
+const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+
+if (apiKey) {
+    console.log("Initializing GoogleGenAI with API Key");
+    try {
+        ai = new GoogleGenAI({apiKey: apiKey});
+    } catch (e) {
+        console.error("Failed to initialize GoogleGenAI with API key:", e.message);
+    }
+} else if (project) {
+    console.log(`Initializing GoogleGenAI with Vertex AI (project: ${project}, location: ${location})`);
+    try {
+        ai = new GoogleGenAI({
+            vertexai: true,
+            project: project,
+            location: location
+        });
+    } catch (e) {
+        console.error("Failed to initialize GoogleGenAI with Vertex AI:", e.message);
+    }
+} else {
+    console.warn("Warning: Neither GEMINI_API_KEY/API_KEY nor GOOGLE_CLOUD_PROJECT is set. GoogleGenAI client will not be initialized. GenAI features will be disabled.");
+}
 
 const staticPath = path.join(__dirname, 'dist');
 const publicPath = path.join(__dirname, 'public');
@@ -115,6 +135,10 @@ app.get('/image-proxy', async (req, res) => {
 
 // Proxy route for Gemini API calls (HTTP)
 app.use('/api-proxy', async (req, res, next) => {
+  if (!apiKey) {
+    return res.status(503).json({ error: 'API Proxy is not configured. GEMINI_API_KEY or API_KEY is missing.' });
+  }
+
   // If the request is an upgrade request, it's for WebSockets, so pass to next middleware/handler
   if (req.headers.upgrade && req.headers.upgrade.toLowerCase() === 'websocket') {
     return next(); // Pass to the WebSocket upgrade handler
@@ -233,6 +257,9 @@ app.use('/api-proxy', async (req, res, next) => {
 });
 
 app.post('/generate-content', async (req, res) => {
+  if (!ai) {
+    return res.status(503).json({ error: 'Generative AI service is not initialized. Please configure API key or Vertex AI project.' });
+  }
   try {
     const response = await ai.models.generateContent(req.body);
     res.json(response);
