@@ -81,14 +81,18 @@ export function useGoogleDrive(onAuthChange: (isSignedIn: boolean) => void) {
       isGapiInitialized.value = true; // Mark as initialized to not block UI
       return;
     }
-    await gapi.client.init({
-      apiKey: driveConfig.driveApiKey,
-      discoveryDocs: DISCOVERY_DOCS,
-    });
-    isGapiInitialized.value = true;
-    if (gapi.client.getToken() !== null) {
-      isSignedIn.value = true;
-      onAuthChange(true);
+    try {
+      await gapi.client.init({
+        apiKey: driveConfig.driveApiKey,
+        discoveryDocs: DISCOVERY_DOCS,
+      });
+      isGapiInitialized.value = true;
+      if (gapi.client.getToken() !== null) {
+        isSignedIn.value = true;
+        onAuthChange(true);
+      }
+    } catch (error) {
+      console.error('Failed to initialize GAPI client:', error);
     }
   }
 
