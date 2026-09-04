@@ -131,8 +131,11 @@ export function useBulkCreation(
           field += char;
         }
       } else {
-        if (char === '"') {
+        if (char === '"' && field.trim() === '') {
           inQuotes = true;
+          field = "";
+        } else if (char === '"') {
+          field += char;
         } else if (char === ',') {
           row.push(field);
           field = "";
